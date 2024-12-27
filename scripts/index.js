@@ -37,7 +37,6 @@ function createCard(arrayCard, fnForRemove) {
 function deleteCard() {
     const placeItem = document.querySelector('.places__item');
     placeItem.remove();
-    console.log('click');
 }
 
 createCard(initialCards, deleteCard);
