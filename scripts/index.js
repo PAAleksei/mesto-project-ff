@@ -35,9 +35,10 @@ function createCard(arrayCard, fnForRemove) {
 };
 
 function deleteCard() {
-    const placeItem = document.querySelector('.places__item');
-    placeItem.remove();
+    let removItem = this.parentElement;
+    removItem.remove();
 }
 
 createCard(initialCards, deleteCard);
+
 
