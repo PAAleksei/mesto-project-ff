@@ -25,7 +25,7 @@ function createCard(cardData, fnForRemove) {
     cardImage.src = cardData.link;
     cardImage.alt = `На картинке ${cardData.name}`;
 
-    deleteButton.addEventListener("click", () => deleteCard(card));
+    deleteButton.addEventListener("click", () => fnForRemove(card));
       
     return card;        
 };
