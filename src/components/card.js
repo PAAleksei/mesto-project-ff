@@ -1,21 +1,6 @@
-import {
-    cardTemplate,
-    cardsContainer,
-    popupTypeNewCard,
-    popupTypeImage,
-    popUpCloseBtnTypeImage,
-    namePlace,
-    urlCardImage,
-} from '../scripts/index';
-  
-import {
-    openPopUp, 
-    closePopUp, 
-    openPopUpImage,
-    clearForms,
-} from './modal';
-   
-function createCard(cardData, fnForRemove) {
+const cardTemplate = document.querySelector('#card-template').content;
+
+export function createCard(cardData, fnForRemove, fnForLike, openPopUpImage) {
     const card = cardTemplate.querySelector('.card').cloneNode(true);
     const cardTitle = card.querySelector('.card__title');
     const cardImage = card.querySelector('.card__image');
@@ -27,42 +12,16 @@ function createCard(cardData, fnForRemove) {
     cardImage.alt = `На картинке ${cardData.name}`;
   
     deleteButton.addEventListener('click', () => fnForRemove(card));
-    likeButton.addEventListener('click', () => likeCards(likeButton, 'card__like-button_is-active'));
-    
-    cardImage.addEventListener('click', () => openPopUp(popupTypeImage));
+    likeButton.addEventListener('click', () => fnForLike(likeButton));
     cardImage.addEventListener('click', () => openPopUpImage(cardImage, cardTitle));
-    popUpCloseBtnTypeImage.addEventListener('click', () => closePopUp(popupTypeImage));
     
     return card;        
 };
   
-function addNewCard(evt) {
-    evt.preventDefault();
-
-    let cardData = {
-            name: namePlace.value,
-            link: urlCardImage.value,
-        };
-        
-    let card = createCard(cardData, deleteCard);
-  
-    cardsContainer.prepend(card); 
-    closePopUp(popupTypeNewCard);
-    
-    clearForms(namePlace, urlCardImage);
-};
-  
-function deleteCard(cardElement) {
+export function deleteCard(cardElement) {
     cardElement.remove();
 };
   
-function likeCards(likeBtn, addingClass) {
-    likeBtn.classList.toggle(addingClass);
-};
-  
-export {
-    createCard, 
-    addNewCard, 
-    deleteCard, 
-    likeCards
+export function likeCard(likeButton) {
+    likeButton.classList.toggle('card__like-button_is-active');
 };

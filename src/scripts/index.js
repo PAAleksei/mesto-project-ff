@@ -5,52 +5,74 @@ import {initialCards} from '../components/cards';
 
 import {    
     createCard, 
-    deleteCard, 
+    deleteCard,
+    likeCard,
 } from '../components/card';
 
 import { 
+    popupTypeEdit,
+    popupTypeImage,
+    formElementTypeEdit,
+    nameInput,
+    jobInput,
+    profileTitle,
+    profileDescription,
     openPopUp, 
-    closePopUp, 
+    closePopUp,
+    openPopUpImage,
+    addClass,
+    addListener,
 } from '../components/modal';
 
-const cardTemplate = document.querySelector('#card-template').content;
 const cardsContainer = document.querySelector('.places__list');
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
 
 const popUps = document.querySelectorAll('.popup');
-const popupTypeEdit = document.querySelector('.popup_type_edit');
 const popupTypeNewCard = document.querySelector('.popup_type_new-card');
-const popupTypeImage = document.querySelector('.popup_type_image');
-
 const popUpCloseBtnTypeEdit = popupTypeEdit.querySelector('.popup__close');
 const popUpCloseBtnTypeNewCard = popupTypeNewCard.querySelector('.popup__close');
 const popUpCloseBtnTypeImage = popupTypeImage.querySelector('.popup__close');
-
-const formElementTypeEdit = popupTypeEdit.querySelector('.popup__form');
-const nameInput = formElementTypeEdit.querySelector('.popup__input_type_name');
-const jobInput = formElementTypeEdit.querySelector('.popup__input_type_description');
-const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
 
 const formElementTypeNewCard = popupTypeNewCard.querySelector('.popup__form');
 const namePlace = formElementTypeNewCard.querySelector('.popup__input_type_card-name');
 const urlCardImage = formElementTypeNewCard.querySelector('.popup__input_type_url');
 
-const popUpImage = popupTypeImage.querySelector('.popup__image');
-const popUpCaption = popupTypeImage.querySelector('.popup__caption');
-
 initialCards.forEach(function addCards(item) {
-    const cardContent = createCard(item, deleteCard);
+    const cardContent = createCard(item, deleteCard, likeCard, openPopUpImage);
     cardsContainer.append(cardContent);
 });
 
 popUps.forEach(function(element) {
-    element.style.display = 'block';
-    element.style.opacity = '0';
-    element.style.height = '0';
-    element.style.position = 'relative';
+    addClass(element, 'popup_is-animated');
 });
+
+function addNewCard(evt) {
+    evt.preventDefault();
+
+    const cardData = {
+            name: namePlace.value,
+            link: urlCardImage.value,
+        };
+        
+    const card = createCard(cardData, deleteCard, likeCard, openPopUpImage);
+  
+    cardsContainer.prepend(card); 
+    closePopUp(popupTypeNewCard);
+    
+    formElementTypeNewCard.reset();
+};
+
+function addNewProfile(evt) {
+    evt.preventDefault();
+
+    profileTitle.textContent = nameInput.value;
+    profileDescription.textContent = jobInput.value;
+
+    closePopUp(popupTypeEdit);
+
+    formElementTypeEdit.reset();
+};
 
 profileEditButton.addEventListener('click', () => openPopUp(popupTypeEdit));
 profileAddButton.addEventListener('click', () => openPopUp(popupTypeNewCard));
@@ -58,26 +80,7 @@ profileAddButton.addEventListener('click', () => openPopUp(popupTypeNewCard));
 popUpCloseBtnTypeEdit.addEventListener('click', () => closePopUp(popupTypeEdit)); 
 popUpCloseBtnTypeNewCard.addEventListener('click', () => closePopUp(popupTypeNewCard)); 
 
-export {
-    cardTemplate,
-    cardsContainer,
-    profileEditButton,
-    profileAddButton,
-    popUps,
-    popupTypeEdit,
-    popupTypeNewCard,
-    popupTypeImage,
-    popUpCloseBtnTypeEdit,
-    popUpCloseBtnTypeNewCard,
-    popUpCloseBtnTypeImage,
-    formElementTypeEdit,
-    nameInput,
-    jobInput,
-    profileTitle,
-    profileDescription,
-    formElementTypeNewCard,
-    namePlace,
-    urlCardImage,
-    popUpImage,
-    popUpCaption,
-};
+popUpCloseBtnTypeImage.addEventListener('click', () => closePopUp(popupTypeImage));
+
+addListener(formElementTypeEdit, 'submit', addNewProfile);
+addListener(formElementTypeNewCard, 'submit', addNewCard);

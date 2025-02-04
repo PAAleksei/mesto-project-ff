@@ -1,39 +1,23 @@
-import {
-    popupTypeEdit,
-    formElementTypeEdit,
-    formElementTypeNewCard,
-    nameInput,
-    jobInput,
-    profileTitle,
-    profileDescription,
-    popUpImage,
-    popUpCaption,
-} from '../scripts/index';
+export const popupTypeEdit = document.querySelector('.popup_type_edit');
+export const popupTypeImage = document.querySelector('.popup_type_image');
+export const formElementTypeEdit = popupTypeEdit.querySelector('.popup__form');
+export const nameInput = formElementTypeEdit.querySelector('.popup__input_type_name');
+export const jobInput = formElementTypeEdit.querySelector('.popup__input_type_description');
+export const profileTitle = document.querySelector('.profile__title');
+export const profileDescription = document.querySelector('.profile__description');
 
-import {addNewCard} from './card';
+const popUpImage = popupTypeImage.querySelector('.popup__image');
+const popUpCaption = popupTypeImage.querySelector('.popup__caption');
 
-function clearProperties(element) {
-    element.style.display = '';
-    element.style.opacity = '';
-    element.style.height = '';
-    element.style.position = '';
-};
-
-function clearForms(name, description) {
-    name.value = '';
-    description.value = '';
-};
-
-function addClass(element, addingClass) {
+export function addClass(element, addingClass) {
     element.classList.add(addingClass);
-    clearProperties(element);
 };
 
 function removeClass(element, removingClass) {
     element.classList.remove(removingClass);
 };
 
-function addListener(element, event, functionCallBack) {
+export function addListener(element, event, functionCallBack) {
     element.addEventListener(event, functionCallBack);
 };
 
@@ -42,61 +26,39 @@ function removeListener(element, event, functionCallBack) {
 };
 
 function closeByEscape(evt) {
-    let closingPopUp = document.querySelector('.popup_is-opened');
+    const closingPopUp = document.querySelector('.popup_is-opened');
     if(evt.key === 'Escape') {
         closePopUp(closingPopUp);
      };
 };
 
 function closeByOverlay(evt) {
-    let closingPopUp = document.querySelector('.popup_is-opened');
-    const popUpContent = closingPopUp.querySelector('.popup__content');
-
-    if(!popUpContent.contains(evt.target)) {
-        closePopUp(closingPopUp);
-    }
+    if (!evt.target.classList.contains('.popup__content')) {
+        closePopUp(evt.target)
+     };
 };
 
-function openPopUp(popUp) {
+function addProfileDataPlacholder() {
+    nameInput.placeholder = profileTitle.textContent;
+    jobInput.placeholder = profileDescription.textContent;
+};
+
+export function openPopUp(popUp) {
     addClass(popUp, 'popup_is-opened');
-    addClass(popUp, 'popup_is-animated');
     addListener(document, 'keydown', closeByEscape);
     addListener(popUp, 'click', closeByOverlay);
-    addListener(formElementTypeEdit, 'submit', addNewProfile);
-    addListener(formElementTypeNewCard, 'submit', addNewCard);
+    addProfileDataPlacholder();
 };
 
-function closePopUp(popUp) {
+export function closePopUp(popUp) {
     removeClass(popUp, 'popup_is-opened');
     removeListener(document, 'keydown', closeByEscape);
     removeListener(popUp, 'click', closeByOverlay);
-    removeListener(formElementTypeEdit, 'submit', addNewProfile);
-    removeListener(formElementTypeNewCard, 'submit', addNewCard);
 };
 
-function addNewProfile(evt) {
-    evt.preventDefault();
-
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
-
-    closePopUp(popupTypeEdit);
-    
-    clearForms(nameInput, jobInput);
-};
-
-function openPopUpImage(image, titleOfPlace) {
+export function openPopUpImage(image, titleOfPlace) {
     popUpImage.src = image.src;
     popUpImage.alt = `На картинке ${titleOfPlace.textContent}`;
     popUpCaption.textContent = titleOfPlace.textContent;
-};
-
-export {
-    removeClass,
-    addListener,
-    openPopUp, 
-    closePopUp,
-    clearForms, 
-    addNewProfile,
-    openPopUpImage,
+    openPopUp(popupTypeImage);
 };
