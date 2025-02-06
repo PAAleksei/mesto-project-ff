@@ -1,6 +1,6 @@
 const cardTemplate = document.querySelector('#card-template').content;
 
-export function createCard(cardData, fnForRemove, fnForLike, openPopUpImage) {
+function createCard(cardData, fnForRemove, fnForLike, openPopUpImage) {
     const card = cardTemplate.querySelector('.card').cloneNode(true);
     const cardTitle = card.querySelector('.card__title');
     const cardImage = card.querySelector('.card__image');
@@ -18,10 +18,12 @@ export function createCard(cardData, fnForRemove, fnForLike, openPopUpImage) {
     return card;        
 };
   
-export function deleteCard(cardElement) {
+function deleteCard(cardElement) {
     cardElement.remove();
 };
   
-export function likeCard(likeButton) {
+function likeCard(likeButton) {
     likeButton.classList.toggle('card__like-button_is-active');
 };
+
+export {createCard, deleteCard, likeCard};
