@@ -76,7 +76,7 @@ function addNewProfile(evt) {
     formElementTypeEdit.reset();
 };
 
-function addProfileValue() {
+function addProfileValues() {
     nameInput.value = profileTitle.textContent;
     jobInput.value = profileDescription.textContent;
 };
@@ -88,7 +88,10 @@ function openPopUpImage(image, titleOfPlace) {
     openPopUp(popupTypeImage);
 };
 
-profileEditButton.addEventListener('click', () => openPopUp(popupTypeEdit));
+profileEditButton.addEventListener('click', () => {
+    openPopUp(popupTypeEdit);
+    addProfileValues;
+});
 profileAddButton.addEventListener('click', () => openPopUp(popupTypeNewCard));
 
 popUpCloseBtnTypeEdit.addEventListener('click', () => closePopUp(popupTypeEdit)); 
@@ -98,4 +101,3 @@ popUpCloseBtnTypeImage.addEventListener('click', () => closePopUp(popupTypeImage
 
 addListener(formElementTypeEdit, 'submit', addNewProfile);
 addListener(formElementTypeNewCard, 'submit', addNewCard);
-addListener(profileEditButton, 'click', addProfileValue);
