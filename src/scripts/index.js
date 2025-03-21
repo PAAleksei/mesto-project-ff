@@ -90,7 +90,7 @@ function openPopUpImage(image, titleOfPlace) {
 
 profileEditButton.addEventListener('click', () => {
     openPopUp(popupTypeEdit);
-    addProfileValues;
+    addProfileValues();
 });
 profileAddButton.addEventListener('click', () => openPopUp(popupTypeNewCard));
 
