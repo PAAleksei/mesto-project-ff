@@ -16,6 +16,11 @@ import {
     closePopUp,
 } from '../components/modal';
 
+import {
+    enableValidation, 
+    clearValidation, 
+} from '../components/validation'
+
 const cardsContainer = document.querySelector('.places__list');
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
@@ -39,6 +44,18 @@ const nameInput = formElementTypeEdit.querySelector('.popup__input_type_name');
 const jobInput = formElementTypeEdit.querySelector('.popup__input_type_description');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+const profileImage = document.querySelector('.profile__image');
+
+
+const validationConfig = {    
+    popUpForms: document.querySelectorAll('.popup__form'),
+    popUpInput: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button-inactive',
+    inputErrorClass: 'popup__input-error_active',
+    inputErrorText: 'popup__input-error-text_active',
+    inputLink: '#link-input',
+};
 
 initialCards.forEach(function addCards(item) {
     const cardContent = createCard(item, deleteCard, likeCard, openPopUpImage);
@@ -53,9 +70,9 @@ function addNewCard(evt) {
     evt.preventDefault();
 
     const cardData = {
-            name: namePlace.value,
-            link: urlCardImage.value,
-        };
+        name: namePlace.value,
+        link: urlCardImage.value,
+    };
         
     const card = createCard(cardData, deleteCard, likeCard, openPopUpImage);
   
@@ -91,13 +108,39 @@ function openPopUpImage(image, titleOfPlace) {
 profileEditButton.addEventListener('click', () => {
     openPopUp(popupTypeEdit);
     addProfileValues();
+    clearValidation(formElementTypeEdit, validationConfig);
 });
-profileAddButton.addEventListener('click', () => openPopUp(popupTypeNewCard));
+
+profileAddButton.addEventListener('click', () => {
+    openPopUp(popupTypeNewCard);
+    clearValidation(formElementTypeNewCard, validationConfig);
+});
 
 popUpCloseBtnTypeEdit.addEventListener('click', () => closePopUp(popupTypeEdit)); 
-popUpCloseBtnTypeNewCard.addEventListener('click', () => closePopUp(popupTypeNewCard)); 
+
+popUpCloseBtnTypeNewCard.addEventListener('click', () => {
+    closePopUp(popupTypeNewCard);
+    clearValidation(formElementTypeNewCard, validationConfig);
+}); 
 
 popUpCloseBtnTypeImage.addEventListener('click', () => closePopUp(popupTypeImage));
 
 addListener(formElementTypeEdit, 'submit', addNewProfile);
 addListener(formElementTypeNewCard, 'submit', addNewCard);
+
+enableValidation(validationConfig);
+
+fetch('https://nomoreparties.co/v1/wff-cohort-35/users/me', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+        authorization: 'ffa59dc2-b1fc-45dc-afaf-4be126fab1b8'
+    }
+})
+.then(res => res.json())
+.then((result) => {
+    
+    profileImage.setAttribute('Style', `background-image: url(${result.avatar})`);
+    profileTitle.textContent = result.name;
+    profileDescription.textContent = result.about;
+});

@@ -14,6 +14,30 @@
   margin-bottom: 0;
 }
 
+.popup__input-error_active {
+  border-bottom-color: #FF0000;
+  margin-bottom: 0;
+}
+
+.popup__input-error-text {
+  display: none;
+  color: #FF0000;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+.popup__input-error-text_active {
+  display: inline-block;
+}
+
+.popup__button-inactive {
+  background-color: transparent !important;
+  color: rgba(0, 0, 0, .2) !important;
+  border: 1px solid rgba(0, 0, 0, .2) !important;
+}
+
 @media screen and (max-width: 568px) {
   .popup__title {
     font-size: 12px;
