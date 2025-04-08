@@ -14,8 +14,8 @@ function removeListener(element, event, functionCallBack) {
 };
 
 function closeByEscape(evt) {
-    const closingPopUp = document.querySelector('.popup_is-opened');
     if(evt.key === 'Escape') {
+        const closingPopUp = document.querySelector('.popup_is-opened');
         closePopUp(closingPopUp);
      };
 };
