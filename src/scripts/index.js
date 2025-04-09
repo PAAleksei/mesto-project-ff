@@ -59,7 +59,6 @@ const profileImage = document.querySelector('.profile__image');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
-
 const validationConfig = {    
     popUpForms: document.querySelectorAll('.popup__form'),
     popUpInput: '.popup__input',
@@ -84,10 +83,14 @@ const apiConfig = {
     formElementTypeEdit,
     formElementTypeNewCard,
     formElementTypeEditAvatar,
+    popupTypeNewCard,
+    popupTypeEdit,
+    popupTypeEditAvatar,
     createCard,
     deleteCard,
     likeCard,
     openPopUpImage,
+    closePopUp,
 };
 
 getInitialCards(apiConfig);
@@ -107,7 +110,6 @@ function addNewCard(evt) {
     addDataCard(cardData, apiConfig);
 
     formElementTypeNewCard.reset();
-    closePopUp(popupTypeNewCard);
 };
 
 function addProfileValues() {
@@ -118,11 +120,10 @@ function addProfileValues() {
 function addNewProfile(evt) {
     evt.preventDefault();
 
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
+    let valueName = nameInput.value;
+    let valueAbout = jobInput.value;
 
-    sendDataProfile(apiConfig);
-    closePopUp(popupTypeEdit);
+    sendDataProfile(valueName, valueAbout, apiConfig);
 };
 
 function addNewAvatar(evt) {
@@ -131,7 +132,6 @@ function addNewAvatar(evt) {
     const url = urlEditAvatar.value;
     sendDataAvatar(url, apiConfig);
 
-    closePopUp(popupTypeEditAvatar);
     formElementTypeEditAvatar.reset();
 };
 

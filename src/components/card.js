@@ -1,6 +1,6 @@
 const cardTemplate = document.querySelector('#card-template').content;
 
-function createCard(cardData, fnForRemove, fnForLike, openPopUpImage) {
+function createCard(cardData, fnForRemove, fnForLike, openPopUpImage, apiconfig) {
     const card = cardTemplate.querySelector('.card').cloneNode(true);
     const cardTitle = card.querySelector('.card__title');
     const cardImage = card.querySelector('.card__image');
@@ -10,6 +10,12 @@ function createCard(cardData, fnForRemove, fnForLike, openPopUpImage) {
     cardTitle.textContent = cardData.name; 
     cardImage.src = cardData.link;
     cardImage.alt = `На картинке ${cardData.name}`;
+
+    cardData.likes.forEach((item) => {
+        if(item._id == apiconfig.myId) {
+            likeButton.classList.add('card__like-button_is-active');
+        }
+    })
   
     deleteButton.addEventListener('click', () => fnForRemove(card));
     likeButton.addEventListener('click', () => fnForLike(likeButton));
