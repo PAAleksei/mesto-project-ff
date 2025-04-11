@@ -20,10 +20,14 @@ import {
 } from '../components/validation'
 
 import {
-    getInitialCards,
+    getDataProfile, 
+    getDataCards,
     sendDataProfile, 
-    addDataCard,
+    sendDataCard,
     sendDataAvatar,
+    deleteCardData,
+    addLike,
+    deleteLike,
 } from'../components/api'
 
 const cardsContainer = document.querySelector('.places__list');
@@ -76,22 +80,45 @@ const apiConfig = {
         authorization: 'ffa59dc2-b1fc-45dc-afaf-4be126fab1b8'
     },
     myId: '19ea88e928ed161791d3bc9f',
-    cardsContainer,
-    profileImage,
-    profileTitle,
-    profileDescription,
-    formElementTypeEdit,
-    formElementTypeNewCard,
-    formElementTypeEditAvatar,
-    popupTypeNewCard,
-    popupTypeEdit,
-    popupTypeEditAvatar,
-    createCard,
-    deleteCard,
-    likeCard,
-    openPopUpImage,
     closePopUp,
 };
+
+function getInitialCards(apiConfig) {
+
+    Promise.all([getDataProfile(apiConfig), getDataCards(apiConfig)])
+    .then(([DataUser, DataCards]) => {
+                
+        profileImage.setAttribute('Style', `background-image: url(${DataUser.avatar})`);
+        profileTitle.textContent = DataUser.name;
+        profileDescription.textContent = DataUser.about;
+    
+        DataCards.forEach(function addCards(item) {
+            const cardContent = createCard(item, deleteCard, likeCard, openPopUpImage, apiConfig);
+            const cardLikeButton = cardContent.querySelector('.card__like-button');
+            const numberOfLikes = cardLikeButton.querySelector('.card__like-button-numbers-of-likes');
+            const deleteButton = cardContent.querySelector('.card__delete-button');
+            
+            numberOfLikes.textContent = item.likes.length;
+    
+            if(item.owner._id!==apiConfig.myId){
+                deleteButton.setAttribute('style', 'display: none');
+            };
+
+            deleteButton.addEventListener('click', () => deleteCardData(item._id, apiConfig));
+            cardLikeButton.addEventListener('click', () => {
+
+                if(cardLikeButton.classList.contains('card__like-button_is-active')) {
+                    addLike(item._id, numberOfLikes, apiConfig);
+                }
+                else{
+                    deleteLike(item._id, numberOfLikes, apiConfig);
+                }
+            })
+            cardsContainer.append(cardContent)
+        })
+    })
+    .catch((err => console.log(`Ошибка.....: ${err}`)))
+}
 
 getInitialCards(apiConfig);
 
@@ -102,12 +129,40 @@ popUps.forEach(function(element) {
 function addNewCard(evt) {
     evt.preventDefault();
 
+    const button = formElementTypeNewCard.querySelector('.popup__button');
     const cardData = {
         name: namePlace.value,
         link: urlCardImage.value,
     };
+    
+    button.textContent = 'Сохранение...';
+    
+    sendDataCard(cardData, apiConfig)
+    .then((data) => {
+        const card = createCard(data, deleteCard, likeCard, openPopUpImage);
+        const cardLikeButton = card.querySelector('.card__like-button');
+        const numberOfLikes = cardLikeButton.querySelector('.card__like-button-numbers-of-likes');
+        const deleteButton = card.querySelector('.card__delete-button');
         
-    addDataCard(cardData, apiConfig);
+        numberOfLikes.textContent = data.likes.length;
+        
+        deleteButton.addEventListener('click', () => deleteCardData(data._id, apiConfig));
+        cardLikeButton.addEventListener('click', () => {
+        
+        if(cardLikeButton.classList.contains('card__like-button_is-active')) {
+            addLike(data._id, numberOfLikes, apiConfig);
+        }
+        else{
+            deleteLike(data._id, numberOfLikes, apiConfig);
+        }
+        });
+        cardsContainer.prepend(card);
+    })
+    .catch(err => console.log(`Ошибка.....: ${err}`))
+    .finally(() => {
+        button.textContent = 'Сохранить';
+        closePopUp(popupTypeNewCard);
+    })
 
     formElementTypeNewCard.reset();
 };
@@ -120,18 +175,42 @@ function addProfileValues() {
 function addNewProfile(evt) {
     evt.preventDefault();
 
+    const button = formElementTypeEdit.querySelector('.popup__button');
+
     let valueName = nameInput.value;
     let valueAbout = jobInput.value;
 
-    sendDataProfile(valueName, valueAbout, apiConfig);
+    button.textContent = 'Сохранение...';
+
+    sendDataProfile(valueName, valueAbout, apiConfig)
+    .then((data) => {
+        profileTitle.textContent = data.name;
+        profileDescription.textContent = data.about;
+    })
+    .catch(err => console.log(`Ошибка.....: ${err}`))
+    .finally(() => {
+        button.textContent = 'Сохранить'
+        closePopUp(popupTypeEdit);
+    })
 };
 
 function addNewAvatar(evt) {
     evt.preventDefault();
 
     const url = urlEditAvatar.value;
-    sendDataAvatar(url, apiConfig);
+    const button = formElementTypeEditAvatar.querySelector('.popup__button');
 
+    button.textContent = 'Сохранение...';
+
+    sendDataAvatar(url, apiConfig)
+    .then((data) => {
+        profileImage.setAttribute('Style', `background-image: url(${data.avatar})`);
+    })
+    .catch(err => console.log(`Ошибка.....: ${err}`))
+    .finally(() => {
+        button.textContent = 'Сохранить'
+        closePopUp(popupTypeEditAvatar);
+    })
     formElementTypeEditAvatar.reset();
 };
 
