@@ -79,7 +79,7 @@ const apiConfig = {
         'Content-Type': 'application/json',   
         authorization: 'ffa59dc2-b1fc-45dc-afaf-4be126fab1b8'
     },
-    myId: '19ea88e928ed161791d3bc9f',
+    userId:'',
     closePopUp,
     addLike,
     deleteLike,
@@ -89,13 +89,14 @@ const apiConfig = {
 function getInitialCards(apiConfig) {
 
     Promise.all([getDataProfile(apiConfig), getDataCards(apiConfig)])
-    .then(([DataUser, DataCards]) => {
-                
-        profileImage.setAttribute('Style', `background-image: url(${DataUser.avatar})`);
-        profileTitle.textContent = DataUser.name;
-        profileDescription.textContent = DataUser.about;
+    .then(([dataUser, dataCards]) => {
+        apiConfig.userId = dataUser._id;
+              
+        profileImage.setAttribute('Style', `background-image: url(${dataUser.avatar})`);
+        profileTitle.textContent = dataUser.name;
+        profileDescription.textContent = dataUser.about;
     
-        DataCards.forEach(function addCards(item) {
+        dataCards.forEach(function addCards(item) {
             const cardContent = createCard(item, deleteCard, likeTheCard, openPopUpImage, apiConfig);          
             cardsContainer.append(cardContent)
         })
@@ -120,7 +121,7 @@ function addNewCard(evt) {
     };
     
     button.textContent = 'Сохранение...';
-    
+ 
     sendDataCard(cardData, apiConfig)
     .then((data) => {
         const card = createCard(data, deleteCard, likeTheCard, openPopUpImage, apiConfig);

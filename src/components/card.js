@@ -8,19 +8,19 @@ function createCard(cardData, fnForRemove, fnForLike, openPopUpImage, apiconfig)
     const likeButton = card.querySelector('.card__like-button');
     
     const numberOfLikes = likeButton.querySelector('.card__like-button-numbers-of-likes');
-
+    
     cardTitle.textContent = cardData.name; 
     cardImage.src = cardData.link;
     cardImage.alt = `На картинке ${cardData.name}`;
     
     numberOfLikes.textContent = cardData.likes.length;
 
-        if(cardData.owner._id !== apiconfig.myId){
+        if(cardData.owner._id !== apiconfig.userId){
             deleteButton.setAttribute('style', 'display: none');
         };
 
     cardData.likes.forEach((item) => {
-        if(item._id == apiconfig.myId) {
+        if(item._id == apiconfig.userId) {
             likeButton.classList.add('card__like-button_is-active');
         }
     })
