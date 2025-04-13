@@ -4,7 +4,7 @@ import '../pages/index.css';
 import {    
     createCard, 
     deleteCard,
-    likeCard,
+    likeTheCard,
 } from '../components/card';
 
 import { 
@@ -81,6 +81,9 @@ const apiConfig = {
     },
     myId: '19ea88e928ed161791d3bc9f',
     closePopUp,
+    addLike,
+    deleteLike,
+    deleteCardData,
 };
 
 function getInitialCards(apiConfig) {
@@ -93,29 +96,10 @@ function getInitialCards(apiConfig) {
         profileDescription.textContent = DataUser.about;
     
         DataCards.forEach(function addCards(item) {
-            const cardContent = createCard(item, deleteCard, likeCard, openPopUpImage, apiConfig);
-            const cardLikeButton = cardContent.querySelector('.card__like-button');
-            const numberOfLikes = cardLikeButton.querySelector('.card__like-button-numbers-of-likes');
-            const deleteButton = cardContent.querySelector('.card__delete-button');
-            
-            numberOfLikes.textContent = item.likes.length;
-    
-            if(item.owner._id!==apiConfig.myId){
-                deleteButton.setAttribute('style', 'display: none');
-            };
-
-            deleteButton.addEventListener('click', () => deleteCardData(item._id, apiConfig));
-            cardLikeButton.addEventListener('click', () => {
-
-                if(cardLikeButton.classList.contains('card__like-button_is-active')) {
-                    addLike(item._id, numberOfLikes, apiConfig);
-                }
-                else{
-                    deleteLike(item._id, numberOfLikes, apiConfig);
-                }
-            })
+            const cardContent = createCard(item, deleteCard, likeTheCard, openPopUpImage, apiConfig);          
             cardsContainer.append(cardContent)
         })
+            
     })
     .catch((err => console.log(`Ошибка.....: ${err}`)))
 }
@@ -139,32 +123,15 @@ function addNewCard(evt) {
     
     sendDataCard(cardData, apiConfig)
     .then((data) => {
-        const card = createCard(data, deleteCard, likeCard, openPopUpImage);
-        const cardLikeButton = card.querySelector('.card__like-button');
-        const numberOfLikes = cardLikeButton.querySelector('.card__like-button-numbers-of-likes');
-        const deleteButton = card.querySelector('.card__delete-button');
-        
-        numberOfLikes.textContent = data.likes.length;
-        
-        deleteButton.addEventListener('click', () => deleteCardData(data._id, apiConfig));
-        cardLikeButton.addEventListener('click', () => {
-        
-        if(cardLikeButton.classList.contains('card__like-button_is-active')) {
-            addLike(data._id, numberOfLikes, apiConfig);
-        }
-        else{
-            deleteLike(data._id, numberOfLikes, apiConfig);
-        }
-        });
+        const card = createCard(data, deleteCard, likeTheCard, openPopUpImage, apiConfig);
         cardsContainer.prepend(card);
+        closePopUp(popupTypeNewCard);
+        formElementTypeNewCard.reset();
     })
     .catch(err => console.log(`Ошибка.....: ${err}`))
     .finally(() => {
         button.textContent = 'Сохранить';
-        closePopUp(popupTypeNewCard);
     })
-
-    formElementTypeNewCard.reset();
 };
 
 function addProfileValues() {
@@ -177,8 +144,8 @@ function addNewProfile(evt) {
 
     const button = formElementTypeEdit.querySelector('.popup__button');
 
-    let valueName = nameInput.value;
-    let valueAbout = jobInput.value;
+    const valueName = nameInput.value;
+    const valueAbout = jobInput.value;
 
     button.textContent = 'Сохранение...';
 
@@ -186,11 +153,11 @@ function addNewProfile(evt) {
     .then((data) => {
         profileTitle.textContent = data.name;
         profileDescription.textContent = data.about;
+        closePopUp(popupTypeEdit);
     })
     .catch(err => console.log(`Ошибка.....: ${err}`))
     .finally(() => {
         button.textContent = 'Сохранить'
-        closePopUp(popupTypeEdit);
     })
 };
 
@@ -205,13 +172,13 @@ function addNewAvatar(evt) {
     sendDataAvatar(url, apiConfig)
     .then((data) => {
         profileImage.setAttribute('Style', `background-image: url(${data.avatar})`);
+        closePopUp(popupTypeEditAvatar);
+        formElementTypeEditAvatar.reset();
     })
     .catch(err => console.log(`Ошибка.....: ${err}`))
     .finally(() => {
         button.textContent = 'Сохранить'
-        closePopUp(popupTypeEditAvatar);
     })
-    formElementTypeEditAvatar.reset();
 };
 
 function openPopUpImage(image, titleOfPlace) {

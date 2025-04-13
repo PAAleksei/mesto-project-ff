@@ -54,35 +54,24 @@ function deleteCardData(cardId, apiConfig) {
     return fetch(`${apiConfig.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: apiConfig.headers
-    });
+    })
+    .then(res => getResponseData(res))
 };
 
-function addLike(cardId, numberOfLikes, apiConfig) {
+function addLike(cardId, apiConfig) {
     return fetch(`${apiConfig.baseUrl}/cards/likes/${cardId}`, {
         method: 'PUT',
         headers: apiConfig.headers
     })
     .then(res => getResponseData(res))
-    .then((result) => {
-        numberOfLikes.textContent = result.likes.length;
-    })
-    .catch((err) => {
-        console.log(err);
-    })
 };
 
-function deleteLike(cardId, numberOfLikes, apiConfig) {
+function deleteLike(cardId, apiConfig) {
     return fetch(`${apiConfig.baseUrl}/cards/likes/${cardId}`, {
         method: 'DELETE',
         headers: apiConfig.headers
     })
     .then(res => getResponseData(res))
-    .then((result) => {
-        numberOfLikes.textContent = result.likes.length;
-    })
-    .catch((err) => {
-        console.log(err);
-    })
 };
 
 function getResponseData(res) {
